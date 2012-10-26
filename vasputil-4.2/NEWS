@@ -1,0 +1,152 @@
+vasputil 4.2, 2008-08-28
+
+* New python libraries, supercell.py and dos.py, intended to be used when
+  writing small scripts.
+
+* New utilities, vasputil_zlayers, vasputil_dosplot, vasputil_interpolate,
+  implemented using the new python libraries.
+
+* Remove MATLAB scripts, as using python+matplotlib interactively provides
+  similar functionality, and the python libraries make it easier to work with
+  VASP rather than having to do extra steps to import/export data.
+
+* Switch from Subversion to Git (I suppose this makes me a version control
+  weenie, since I have gone from RCS->CVS->Subversion->Git).
+
+------------------------------------------------------------------------------
+
+vasputil 4.1, 2008-08-07
+
+* Fix compilation with gfortran and other compilers that have built-in support
+  for F2003 command line arguments.
+* Upgrade to GPL 3 license.
+
+-----------------------------------------------------------------------------
+
+vasputil 4.0.2, 2008-02-27
+
+* Bugfix in scgenerator, thanks to Chinnappan Ravi and Sebastien Lebegue for
+  reporting.
+
+------------------------------------------------------------------
+
+vasputil 4.0.1, 2007-07-21
+
+* Remove rotatez.m, as rotate_molecule does the same thing more generally.
+
+* Rename matlab scripts to avoid conflicting with matlab provided ones.
+
+* Small bugfixes, see ChangeLog for details.
+
+* Switch from CVS to Subversion. 
+
+-------------------------------------------------------------
+
+vasputil 4.0, 2006-12-05
+
+* New build system using GNU autotools.
+
+* New utility, dumpatomsase.
+
+* New Octave/Matlab scripts: rotate and translate.
+
+----------------------------------------------------------
+
+vasputil 3.3.1, 2006-07-28
+
+* Bugfix in scgenerator.
+
+-----------------------------------------------------------
+
+vasputil 3.3, 2006-03-29
+
+* New utility, centercell.
+
+* Source code reorganized.
+
+------------------------------------------------------------
+
+vasputil 3.2, 2005-12-21
+
+* New utility, test (run some self-tests).
+
+* Switched from RCS to CVS.
+
+* scgenerator now replicates the primitive cell, not only the basis
+vectors. 
+
+* A bug in scgenerator was fixed. Thanks to Arijit Sen for bringing it
+to my attention.
+
+-----------------------------------------------------------
+
+vasputil 3.1, 2005-10-26
+
+* New utilities, dumpcoords and importcoords.
+
+* New Octave/Matlab scripts: printcoords and rotatez.
+
+* Makefile fragment for Intel Fortran 9.0.
+
+------------------------------------------------------------
+
+vasputil 3.0, 2005-09-19
+
+* Removed symlinks, instead utilities are accessed via the main program.
+
+* New utility, xyz2poscar.
+
+* Renamed POSCAR2xyz to poscar2xyz.
+
+* Renamed planetoatom to plane2atom.
+
+* Renamed planetolayer to plane2layer.
+
+* Started to use RCS.
+
+----------------------------------------------------------
+
+vasputil 2.5, 2005-07-07
+
+* Directory reorganization, standard GNU files
+added.
+
+* Added Makefile fragment for Pathscale compiler.
+
+----------------------------------------------------------
+
+vasputil 2.4, 2005-05-04
+
+* Increased precision in write_POSCAR (now F18.14).
+
+* Bugfix in atomsdistance.
+
+------------------------------------------------------------
+	
+vasputil 2.3, 2005-04-18
+
+* New utility included: lockatoms.
+
+------------------------------------------------------------
+
+vasputil 2.2, 2005-04-13
+
+* Minor improvements to species recognition in read_POSCAR, slightly
+better hash function for the supercell generator.
+
+------------------------------------------------------------
+
+vasputil 2.1, 2005-04-13
+
+* Improved species recognition and input methods when reading POSCAR.
+
+-------------------------------------------------------------
+
+vasputil 2.0, 2005-04-12
+
+* Added a supercell generator (scgenerator)
+
+* Bugfix in supercell_core (removeAtoms): Workaround for bug in
+Portland pgf90 5.2-4 compiler.
+
+* Started to keep a ChangeLog and NEWS file.	

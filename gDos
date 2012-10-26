@@ -1,0 +1,41 @@
+#!/bin/tcsh
+
+# E, s, p, d, is, ip, id
+
+set file=$1
+
+pdos.py $file 
+
+set cmd="gnuplot.scr"
+cat > $cmd << END
+set data style linespoints
+set xlabel "E-Ef"
+set yrange [0:*]
+set xrange [*:0]
+
+set ylabel "pdos"
+plot "pdos.dat" u 1:2 t "s", "pdos.dat" u 1:3 t "p"
+pause -1 "Showing pdos.\nPress enter to quit"
+
+set ylabel "ratio"
+plot "pdos.dat" u 1:(\$3/\$2) t "p/s"
+pause -1 "Showing p/s.\nPress enter to quit"
+
+set ylabel "ipdos"
+plot "pdos.dat" u 1:5 t "is", "pdos.dat" u 1:6 t "ip"
+pause -1 "Showing ipdos.\nPress enter to quit"
+
+set yrange [0:1.1]
+set ylabel "% total dos"
+plot "pdos.dat" u 1:(\$5/(\$5 + \$6)) t "s", "pdos.dat" u 1:(\$6/(\$5 + \$6)) t "p"
+pause -1 "Showing % dos.\nPress enter to quit"
+
+quit
+END
+
+gnuplot $cmd
+
+\rm $cmd
+
+mv pdos.dat $file.pdos
+mv dos.dat $file.dos

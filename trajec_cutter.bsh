@@ -1,0 +1,89 @@
+#! /bin/bash
+### Program: trajec_cutter.bsh
+### Written by: Adam Chaffey
+### This program slices up a TRAJEC.xyz file into smaller pieces for further analysis
+### Last Mod:  31 May 2007
+### List of Mods:
+### - now using 'wc -l' to count lines instead of nl.  Speed improvment.
+### - correctly handles requests for larger slices than available in TRAJEC.xyz
+### - uses "slice" as an alias to "cut"
+
+if [ -z "$1" ]; then
+ echo -e "\nThis program creates slices of a TRAJEC.xyz file for further analysis"
+ echo -e "Usage: ./trajec_cutter.bsh operation n_steps \n where operation is the desired trim operation (head or tail) \n n_steps is the number of total timesteps to trim. \n Alternate usage:\n ./trajec_cutter.bsh cut limit1 limit2 \n In 'cut' mode, the program will select the slice of a TRAJEC file between the two specified step limits"
+exit 0
+else
+ echo -e "\nWorking... "
+fi
+
+natoms=`head -n 1 TRAJEC.xyz`
+echo -e "There are $natoms atoms in this simulation"
+block_size=`echo \($natoms \+ 2 \) | bc -l`
+echo -e "Which gives $block_size lines per timestep"
+#last_line=`nl TRAJEC.xyz | tail -n 1 | awk '{print $1}'`
+last_line=`wc -l TRAJEC.xyz | awk '{print $1}'`
+echo -e "There are $last_line lines in this file"
+ndata_blocks=`echo \($last_line \/ $block_size \) | bc `
+echo -e "Which means that there are $ndata_blocks timesteps in total."
+
+trim_value=`echo \($2 \* $block_size \) | bc `
+echo "Slicing TRAJEC.xyz file...."
+
+case "$1" in
+ "head" )
+  head  -n $trim_value TRAJEC.xyz > TRAJEC.$1-$2.xyz
+  echo "Done! Output written to TRAJEC.$1-$2.xyz"
+;;
+ "tail" )
+  tail  -n $trim_value TRAJEC.xyz > TRAJEC.$1-$2.xyz
+  echo "Done! Output written to TRAJEC.$1-$2.xyz"
+;;
+ "cut" ) 
+ if [ $3 -gt $ndata_blocks ]; then
+   echo -e "Sorry, there are only $ndata_blocks in the file, and you requested $3."
+   echo -e "Proceeding with slice, except using $ndata_blocks as upperbound... "
+   uplimit=${ndata_blocks}
+ else
+ uplimit="$3" 
+ fi
+ # - 1 to accurately get the first set
+ starting_line=`echo \( \($2 \- 1 \)  \* $block_size \) | bc`
+ ending_line=`echo  \( $uplimit \* $block_size \) | bc`  
+#The head/tail method 
+  top_range=`echo \($last_line \- $starting_line \) | bc`
+  bot_range=`echo \($ending_line \- $starting_line \) | bc`
+  tail -n $top_range TRAJEC.xyz > TRAJEC.tmpfile
+  head -n $bot_range TRAJEC.tmpfile > TRAJEC.slice$2-$uplimit.xyz
+  rm TRAJEC.tmpfile
+#the sed method  #>> found to be slower than the head/tail method!
+ # sed $starting_line,$ending_line!d TRAJEC.xyz > TRAJEC.slice$2-$uplimit.xyz
+ 
+ echo "Done! Output written to TRAJEC.slice$2-$uplimit.xyz"
+;;
+ "slice" )
+ if [ $3 -gt $ndata_blocks ]; then
+   echo -e "Sorry, there are only $ndata_blocks in the file, and you requested $3."
+   echo -e "Proceeding with slice, except using $ndata_blocks as upperbound... "
+   uplimit=${ndata_blocks}
+ else
+ uplimit="$3"
+ fi
+ # - 1 to accurately get the first set
+ starting_line=`echo \( \($2 \- 1 \)  \* $block_size \) | bc`
+ ending_line=`echo  \( $uplimit \* $block_size \) | bc`
+#The head/tail method 
+  top_range=`echo \($last_line \- $starting_line \) | bc`
+  bot_range=`echo \($ending_line \- $starting_line \) | bc`
+  tail -n $top_range TRAJEC.xyz > TRAJEC.tmpfile
+  head -n $bot_range TRAJEC.tmpfile > TRAJEC.slice$2-$uplimit.xyz
+  rm TRAJEC.tmpfile
+#the sed method  #>> found to be slower than the head/tail method!
+ # sed $starting_line,$ending_line!d TRAJEC.xyz > TRAJEC.slice$2-$uplimit.xyz
+
+ echo "Done! Output written to TRAJEC.slice$2-$uplimit.xyz"
+;;
+  * )
+ echo -e "You have not enetered a valid selection\n Terminating Execution..."
+ exit 0
+;;
+esac

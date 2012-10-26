@@ -1,0 +1,44 @@
+#!/bin/csh
+
+set acell=`head -2 POSCAR | tail -1 | awk '{print $1}'`
+set acell_bohr=`head -2 POSCAR | tail -1 | awk '{print $1/0.529177}'`
+set natoms=`head -6 POSCAR | tail -1`
+echo $natoms
+
+set lines=`wc -l XDATCAR | awk '{print $1 - 4}'`
+
+tail -"$lines" XDATCAR | grep "0\." | awk -f /usr/local/analysis/utils/convert_coor_TRAJEC.awk acell=$acell_bohr natoms=$natoms > TRAJEC.xyz &
+tail -"$lines" XDATCAR | grep "0\." | awk -f /usr/local/analysis/utils/convert_coor_TRAJEC_cell.awk acell=$acell_bohr natoms=$natoms > TRAJEC_cell.xyz &
+
+wait
+
+set unwrap_input="unwrap.in"
+cat > $unwrap_input << END
+TRAJEC.xyz
+$acell $acell $acell
+END
+
+set msd_input="msd.in"
+cat > $msd_input << END
+unwrapped.xyz
+END
+
+set rdf_input="rdf.in"
+cat > $rdf_input << END
+TRAJEC_cell.xyz
+RDF.dat
+H
+H
+3.4392
+0.025
+1
+END
+
+grep pressure */OUTCAR | awk '{print $5}' > pressure.dat &
+
+RDF < $rdf_input > /dev/null &
+unwrap_PBC.x < $unwrap_input > /dev/null
+msd.x < $msd_input > /dev/null
+
+rm $unwrap_input $msd_input 
+#rm $unwrap_input $msd_input $rdf_input
