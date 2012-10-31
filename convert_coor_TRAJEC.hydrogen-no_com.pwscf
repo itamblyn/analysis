@@ -1,0 +1,8 @@
+#!/bin/csh
+
+set acell=`grep celldm hydrogen.pw.inp | awk '{print $3}' | sed s/,//g`
+set natoms=`grep nat hydrogen.pw.inp | tail -1 | awk '{print $3}' | sed s/,//g`
+
+touch output/fake.out
+
+grep -A $natoms ATOMIC_POSITIONS output/*.out | awk '/H/{print $2," ",$3," ",$4}' | sed s/"\-"/" \-"/g | awk -f /usr/local/analysis/utils/convert_coor_TRAJEC.awk acell=$acell natoms=$natoms > TRAJEC.xyz

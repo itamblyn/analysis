@@ -1,0 +1,3 @@
+#!/bin/csh
+/usr/local/mpich.32/bin/mpif90 -O -o ps_trans.mahone2 ps_trans.f90
+

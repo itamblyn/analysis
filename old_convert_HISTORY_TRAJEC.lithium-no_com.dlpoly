@@ -1,0 +1,6 @@
+#!/bin/csh
+
+set acell=1.8897268
+set natoms=`awk '/timestep/{print $3}' HISTORY | head -1`
+
+awk '/LI/{getline; print $0}' HISTORY | awk -f /usr/local/analysis/utils/convert_coor_TRAJEC.awk acell=$acell natoms=$natoms > TRAJEC.xyz

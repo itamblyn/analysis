@@ -1,0 +1,9 @@
+#!/bin/csh
+
+set acell=`grep celldm lithium.pw.inp | awk '{print $3}' | sed s/,//g`
+set natoms=`grep nat lithium.pw.inp | tail -1 | awk '{print $3}' | sed s/,//g`
+
+grep -A $natoms ATOMIC_POSITIONS md.out | awk '/Li/{print $2," ",$3," ",$4}' | sed s/"\-"/" \-"/g > md.coor
+
+/usr/local/analysis/utils/convert_coor_TRAJEC.py $natoms $acell
+rm md.coor
