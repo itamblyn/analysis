@@ -8,17 +8,17 @@ alat_bohr=`head -2 POSCAR | tail -1 | awk '{print $1/.529177}'`
   tail -102000 TRAJEC.xyz > TRAJEC.1000.xyz 
   echo "TRAJEC.1000.xyz" > cbn.in
   echo "$alat_bohr, $alat_bohr, $alat_bohr" >> cbn.in
-  ~/analysis/fortran/cbn_from_xyz_cpmd.osx < cbn.in
+  ~/git/MD/bin/cbn_from_xyz.x < cbn.in
   rm -f cbn.in
   rm -f TRAJEC.1000.xyz 
 
 # cnn
-  ~/analysis/nn_distance/nn_distance_distributions_cnn.py 100 $alat_bohr $alat_bohr $alat_bohr TRAJEC.1000.xyz
+  ~/git/MD/nn_distance/nn_distance_distributions_cnn.py 100 $alat_bohr $alat_bohr $alat_bohr TRAJEC.1000.xyz
   echo "TRAJEC.xyz" > nn_dist.in
   echo "$alat, $alat, $alat">> nn_dist.in
   echo "200" >> nn_dist.in
   echo "64" >> nn_dist.in
-  ~/analysis/fortran/nn_dist/nn_dist.osx < nn_dist.in
+  ~/git/MD/nn_distance/nn_dist.x < nn_dist.in
   rm nn_dist.in
 
 # rdf
@@ -31,34 +31,34 @@ alat_bohr=`head -2 POSCAR | tail -1 | awk '{print $1/.529177}'`
   echo "0" >> RDF.in
   echo "$alat, $alat, $alat" >> RDF.in
 
-  ~/analysis/fortran/RDF/RDF.osx < RDF.in
+  ~/git/private/ERS/RDF/RDF.x < RDF.in
 
 # unwrap
   echo "TRAJEC.xyz" > unwrap.in
   echo "$alat, $alat, $alat" >> unwrap.in
-  ~/analysis/fortran/unwrap_PBC.osx < unwrap.in
+  ~/git/MD/bin/unwrap_PBC.x < unwrap.in
   rm -f unwrap.in
 # msd
   echo "unwrapped.xyz" > msd.in
-  ~/analysis/fortran/msd.osx < msd.in
+  ~/git/MD/bin/msd.x < msd.in
   rm -f msd.in
 
 
 # bonding
 rm -rf correlators
 mkdir correlators
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 1  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 2  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 3  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 4  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 5  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 6  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 7  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 8  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 9  100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 10 100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 11 100 &
-  ~/analysis/bonding_lifetime/bonding_lifetime_n_body.py TRAJEC.cnn 12 100 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 1  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 2  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 3  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 4  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 5  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 6  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 7  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 8  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 9  40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 10 40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 11 40 &
+  ~/git/MD/bonding_lifetime_n_body.py TRAJEC.cnn 12 40 &
 wait
 
 mv correlator_*nn.dat correlators/
